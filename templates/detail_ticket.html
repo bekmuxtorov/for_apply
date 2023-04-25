@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">ID: {{ticket.pk}}</h1>
+            <ol class="breadcrumb mb-4">
+                <li class="breadcrumb-item active">{{ticket.full_name}}</li>
+            </ol>
+        </div>
+        <div class="detail-box">
+            <ul class="ticket-text">
+                <p class="item-title">Umumiy ma'lumotlar:</p>
+                <li class="detail-item">
+                    <p class="detail-key">Ismi, Familiyasi va Sharifi:</p>
+                    <p class="detail-value">{{ticket.full_name}}</p>
+                </li>
+                <li class="detail-item">
+                    <p class="detail-key">Fakulteti:</p>
+                    <p class="detail-value">{{ticket.faculty}}</p>
+                </li>
+                <li class="detail-item">
+                    <p class="detail-key">Guruh raqami:</p>
+                    <p class="detail-value">{{ticket.group_number}}</p>
+                </li>
+                <li class="detail-item">
+                    <p class="detail-key">Holat:</p>
+                    <p class="detail-value">{{ticket.get_status}}</p>
+                </li>
+                <li class="detail-item">
+                    <p class="detail-key">Qabul qilingan:</p>
+                    <p class="detail-value">{{ticket.created_at}}</p>
+                </li>
+            </ul>
+            <div class="ticket-img">
+                <p class="item-title">Yuborilgan rasm:</p>
+                <div class="img">
+                    <img class="img-fluid" src="{{ticket.file.url}}" alt="">
+                </div>
+            </div>
+        </div>
+
+        <form action="" method="POST">{% csrf_token %}
+            <div class="detail-management">
+                <div class="dropdown">
+                    <button class="btn btn-primary" type="submit">
+                        Tasdiqlash
+                    </button>
+                </div>
+                <a href="send_message.html" class="btn btn-secondary">
+                    Savol jo'natish
+                </a>
+            </div>
+        </form>
+    </main>
+    {% endblock content %}

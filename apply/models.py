@@ -4,10 +4,9 @@ from django.db import models
 
 
 STATUS_LIST = (
-    ('progress', 'Jarayonda'),
+    ('new', 'Yangi'),
+    ('waiting', 'Kutilmoqda'),
     ('confirmed', 'Tasdiqlangan'),
-    ('not_confirmed', 'Tasdiqlanmagan'),
-    ('closed', 'Yopildi')
 )
 
 
@@ -41,7 +40,7 @@ class Ticket(models.Model):
     status = models.CharField(
         max_length=13,
         choices=STATUS_LIST,
-        default='progress'
+        default='new'
     )
     file = models.ImageField(
         upload_to='ticket_image/',
@@ -52,6 +51,14 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.full_name + ' || ' + str(self.id)
+
+    def get_date(self):
+        return self.created_at.strftime("%H:%M / %d.%m.%Y")
+
+    def get_status(self):
+        for i in STATUS_LIST:
+            if i[0] == self.status:
+                return i[1]
 
     class Meta:
         db_table = 'ticket'

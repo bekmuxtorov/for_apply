@@ -1,0 +1,67 @@
+.detail_button:hover {
+    cursor: pointer !important
+}
+
+.detail-box {
+    border: 2px solid #ccc;
+    padding: 10px 20px;
+}
+
+.detail-box ul {
+    list-style: none;
+    padding: 0;
+}
+
+.detail-item {
+    display: flex;
+}
+
+.detail-item p {
+    font-size: 18px;
+    width: 50%;
+    padding-right: 10px;
+    margin: 0;
+    padding: 8px;
+}
+
+.detail-key {
+    text-align: right;
+    font-weight: 500;
+}
+
+.detail-value {
+    text-align: left;
+}
+
+.item-title {
+    font-size: 20px;
+    font-family: sans-serif
+}
+
+.ticket-img {
+    border-top: 2px solid #ccc;
+    padding-top: 8px !important
+}
+
+.img {
+    text-align: center;
+    width: 90%;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+}
+
+.detail-management {
+    padding: 50px 20px 120px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+}
+
+.detail-management div {
+    padding-right: 10px;
+}
+
+.detail-management button,
+a {
+    width: 200px;
+}
