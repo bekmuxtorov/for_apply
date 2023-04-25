@@ -25,10 +25,6 @@ class Faculty(models.Model):
 
 
 class Ticket(models.Model):
-    id = models.IntegerField(
-        primary_key=True,
-        default=10000
-    )
     full_name = models.CharField(
         max_length=400,
         verbose_name='Ism, Familiya va Sharif'
