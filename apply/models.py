@@ -22,6 +22,9 @@ class Faculty(models.Model):
         verbose_name = 'Fakultet'
         verbose_name_plural = 'Fakultetlar'
 
+    def get_count(self):
+        return self.tickets.count()
+
 
 class Ticket(models.Model):
     full_name = models.CharField(
@@ -31,7 +34,8 @@ class Ticket(models.Model):
     faculty = models.ForeignKey(
         to=Faculty,
         on_delete=models.CASCADE,
-        verbose_name='Fakultet'
+        verbose_name='Fakultet',
+        related_name='tickets'
     )
     group_number = models.CharField(
         max_length=20,
