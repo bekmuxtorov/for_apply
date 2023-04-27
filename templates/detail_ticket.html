@@ -3,11 +3,16 @@
 {% block content %}
 <div id="layoutSidenav_content">
     <main>
-        <div class="container-fluid px-4">
-            <h1 class="mt-4">ID: {{ticket.pk}}</h1>
-            <ol class="breadcrumb mb-4">
-                <li class="breadcrumb-item active">{{ticket.full_name}}</li>
-            </ol>
+        <div class="message-box">
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">ID: {{ticket.pk}}</h1>
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">{{ticket.full_name}}</li>
+                </ol>
+            </div>
+            <div class="container-fluid px-4">
+                <h1 class="alert alert-success mt-1" role="alert">{{msg}}</h1>
+            </div>
         </div>
         <div class="detail-box">
             <ul class="ticket-text">
@@ -48,7 +53,7 @@
                         Tasdiqlash
                     </button>
                 </div>
-                <a href="send_message.html" class="btn btn-secondary">
+                <a href="{% url 'send_message' pk=ticket.id %}" class="btn btn-secondary">
                     Savol jo'natish
                 </a>
             </div>

@@ -41,14 +41,17 @@ def tickets_page(request):
 
 @login_required
 def tables_detail(request, pk):
+    msg = str()
     choose_ticket = models.Ticket.objects.get(pk=pk)
     if request.method == 'POST':
         choose_ticket.status = 'confirmed'
         choose_ticket.save()
+        msg = 'Ariza muaffiqiyatli tasdiqlandi'
 
     context = {
         'ticket': choose_ticket,
-        'status_list': STATUS_LIST
+        'status_list': STATUS_LIST,
+        'msg': msg
     }
     return render(request, 'detail_ticket.html', context)
 
@@ -62,3 +65,14 @@ def status_tables_page(request, status):
         'status': status
     }
     return render(request, 'filter_tables.html', context)
+
+
+@login_required
+def send_message_page(request, pk):
+    choose_ticket = models.Ticket.objects.get(pk=pk)
+    tickets = models.Ticket.objects.all().order_by('-created_at')[:10]
+    context = {
+        'tickets': tickets,
+        'choose_ticket': choose_ticket
+    }
+    return render(request, 'send_message.html', context)
