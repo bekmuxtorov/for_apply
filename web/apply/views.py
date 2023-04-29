@@ -1,6 +1,10 @@
+import requests
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.conf import settings
+
 from . import models
+
 
 STATUS_LIST = (
     ('new', 'Yangi'),
@@ -21,6 +25,7 @@ def home_page(request):
     faculties_name = [faculty_data.name for faculty_data in faculties_data]
     faculties_count = [faculty_data.get_count()
                        for faculty_data in faculties_data]
+    status_count = 
 
     context = {
         'status_list': STATUS_LIST,
@@ -67,12 +72,30 @@ def status_tables_page(request, status):
     return render(request, 'filter_tables.html', context)
 
 
+def send_message(telegram_id, message):
+    TOKEN = settings.BOT_TOKEN
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    requests.post(url, {'chat_id': telegram_id,
+                  'text': message, 'parse_mode': 'HTML'})
+
+
 @login_required
 def send_message_page(request, pk):
     choose_ticket = models.Ticket.objects.get(pk=pk)
     tickets = models.Ticket.objects.all().order_by('-created_at')[:10]
+    student_name = choose_ticket.full_name.split(' ')[0]
+    message = f'Assalomu alekum {student_name.title()}\n\n'
+    msg = str()
+    if request.method == 'POST':
+        subject = request.POST.get('subject')
+        text = request.POST.get('text')
+        message += f'<b>Mavzu:</b> {subject}\n'
+        message += f'<b>Xabar:</b> {text}'
+        send_message(choose_ticket.telegam_id, message)
+        msg = 'Xabar muvaffaqiyat yuborildi!'
     context = {
         'tickets': tickets,
-        'choose_ticket': choose_ticket
+        'choose_ticket': choose_ticket,
+        'msg': msg
     }
     return render(request, 'send_message.html', context)

@@ -10,9 +10,11 @@
                     <li class="breadcrumb-item active">{{ticket.full_name}}</li>
                 </ol>
             </div>
+            {% if msg %}
             <div class="container-fluid px-4">
                 <h1 class="alert alert-success mt-1" role="alert">{{msg}}</h1>
             </div>
+            {% endif %}
         </div>
         <div class="detail-box">
             <ul class="ticket-text">
@@ -41,7 +43,7 @@
             <div class="ticket-img">
                 <p class="item-title">Yuborilgan rasm:</p>
                 <div class="img">
-                    <img class="img-fluid" src="{{ticket.file.url}}" alt="">
+                    <img class="img-fluid" src="{{ticket.file}}" alt="">
                 </div>
             </div>
         </div>
