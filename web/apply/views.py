@@ -25,7 +25,6 @@ def home_page(request):
     faculties_name = [faculty_data.name for faculty_data in faculties_data]
     faculties_count = [faculty_data.get_count()
                        for faculty_data in faculties_data]
-    status_count = 
 
     context = {
         'status_list': STATUS_LIST,
@@ -44,13 +43,28 @@ def tickets_page(request):
     return render(request, 'tables.html', context)
 
 
+def send_message(telegram_id, message):
+    TOKEN = settings.BOT_TOKEN
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    requests.post(url, {'chat_id': telegram_id,
+                  'text': message, 'parse_mode': 'HTML'})
+
+
 @login_required
 def tables_detail(request, pk):
     msg = str()
+    message = str()
     choose_ticket = models.Ticket.objects.get(pk=pk)
     if request.method == 'POST':
+        paynet = request.POST.get('paynet')
+        comment = request.POST.get('comment')
         choose_ticket.status = 'confirmed'
+        choose_ticket.paynet = paynet
         choose_ticket.save()
+        message = ""
+        message += f'<b>Summa:</b> {paynet}\n'
+        message += f'<b>Izoh:</b> {comment}'
+        send_message(choose_ticket.user.telegam_id, message)
         msg = 'Ariza muaffiqiyatli tasdiqlandi'
 
     context = {
@@ -72,18 +86,11 @@ def status_tables_page(request, status):
     return render(request, 'filter_tables.html', context)
 
 
-def send_message(telegram_id, message):
-    TOKEN = settings.BOT_TOKEN
-    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-    requests.post(url, {'chat_id': telegram_id,
-                  'text': message, 'parse_mode': 'HTML'})
-
-
 @login_required
 def send_message_page(request, pk):
     choose_ticket = models.Ticket.objects.get(pk=pk)
     tickets = models.Ticket.objects.all().order_by('-created_at')[:10]
-    student_name = choose_ticket.full_name.split(' ')[0]
+    student_name = choose_ticket.user.full_name.split(' ')[0]
     message = f'Assalomu alekum {student_name.title()}\n\n'
     msg = str()
     if request.method == 'POST':

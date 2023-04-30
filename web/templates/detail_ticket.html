@@ -7,7 +7,7 @@
             <div class="container-fluid px-4">
                 <h1 class="mt-4">ID: {{ticket.pk}}</h1>
                 <ol class="breadcrumb mb-4">
-                    <li class="breadcrumb-item active">{{ticket.full_name}}</li>
+                    <li class="breadcrumb-item active">{{ticket.user.full_name}}</li>
                 </ol>
             </div>
             {% if msg %}
@@ -21,15 +21,15 @@
                 <p class="item-title">Umumiy ma'lumotlar:</p>
                 <li class="detail-item">
                     <p class="detail-key">Ismi, Familiyasi va Sharifi:</p>
-                    <p class="detail-value">{{ticket.full_name}}</p>
+                    <p class="detail-value">{{ticket.user.full_name}}</p>
                 </li>
                 <li class="detail-item">
                     <p class="detail-key">Fakulteti:</p>
-                    <p class="detail-value">{{ticket.faculty}}</p>
+                    <p class="detail-value">{{ticket.user.faculty}}</p>
                 </li>
                 <li class="detail-item">
                     <p class="detail-key">Guruh raqami:</p>
-                    <p class="detail-value">{{ticket.group_number}}</p>
+                    <p class="detail-value">{{ticket.user.group_number}}</p>
                 </li>
                 <li class="detail-item">
                     <p class="detail-key">Holat:</p>
@@ -43,6 +43,11 @@
             <div class="ticket-img">
                 <p class="item-title">Yuborilgan rasm:</p>
                 <div class="img">
+
+                    {% comment %}
+                    if qo'yib ket
+                    {% endcomment %}
+
                     <img class="img-fluid" src="{{ticket.file}}" alt="">
                 </div>
             </div>
@@ -51,9 +56,12 @@
         <form action="" method="POST">{% csrf_token %}
             <div class="detail-management">
                 <div class="dropdown">
-                    <button class="btn btn-primary" type="submit">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop">
                         Tasdiqlash
                     </button>
+
+
                 </div>
                 <a href="{% url 'send_message' pk=ticket.id %}" class="btn btn-secondary">
                     Savol jo'natish
@@ -61,4 +69,37 @@
             </div>
         </form>
     </main>
+
+    <!-- asdf -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Tasdiqlash oynasi</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST">{% csrf_token %}
+                        <div class="form-floating mb-3">
+                            <input type="number" name="paynet" class="form-control" id="floatingInput"
+                                placeholder="Summani kiriting" required>
+                            <label for="floatingInput">Summani kiriting</label>
+                        </div>
+                        <div class="form-floating">
+                            <input value="Qabul qilindi!" class="form-control" name="comment"
+                                id="floatingInput">
+                            <label for="floatingTextarea">Izoh</label>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                    <button type="submit" class="btn btn-primary">Tasdiqlash</button>
+                </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+    <!-- asdf -->
     {% endblock content %}

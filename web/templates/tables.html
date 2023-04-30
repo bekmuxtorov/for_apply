@@ -38,14 +38,14 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            {% for ticket in tickets %}
 
+                            {% for ticket in tickets %}
                             <tr>
                                 <td>{{ticket.id}}</td>
                                 <td><a class="detail_button"
-                                        href="{% url 'tickets_detail' ticket.id %}">{{ticket.full_name}}</a></td>
-                                <td>{{ticket.faculty}}</td>
-                                <td>{{ticket.group_number}}</td>
+                                        href="{% url 'tickets_detail' ticket.id %}">{{ticket.user.full_name}}</a></td>
+                                <td>{{ticket.user.faculty}}</td>
+                                <td>{{ticket.user.group_number}}</td>
                                 <td>{{ticket.get_status}}</td>
                                 <td>{{ticket.get_date}}</td>
                             </tr>
