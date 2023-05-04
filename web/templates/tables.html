@@ -6,7 +6,7 @@
         <div class="container-fluid px-4">
             <h1 class="mt-4">Barcha arizalar</h1>
             <ol class="breadcrumb mb-4">
-                <li class="breadcrumb-item"><a href="index.html">Boshqaruv paneli</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Boshqaruv paneli</a></li>
                 <li class="breadcrumb-item active">Barcha arizalar</li>
             </ol>
 
@@ -23,6 +23,7 @@
                                 <th>To'liq ism</th>
                                 <th>Fakulteti</th>
                                 <th>Guruh raqami</th>
+                                <th>Turi</th>
                                 <th>Holat</th>
                                 <th>Vaqt</th>
                             </tr>
@@ -33,6 +34,7 @@
                                 <th>To'liq ism</th>
                                 <th>Fakulteti</th>
                                 <th>Guruh raqami</th>
+                                <th>Turi</th>
                                 <th>Holat</th>
                                 <th>Vaqt</th>
                             </tr>
@@ -46,6 +48,7 @@
                                         href="{% url 'tickets_detail' ticket.id %}">{{ticket.user.full_name}}</a></td>
                                 <td>{{ticket.user.faculty}}</td>
                                 <td>{{ticket.user.group_number}}</td>
+                                <td>{{ticket.type.name}}</td>
                                 <td>{{ticket.get_status}}</td>
                                 <td>{{ticket.get_date}}</td>
                             </tr>

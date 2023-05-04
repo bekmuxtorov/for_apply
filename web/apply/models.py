@@ -47,11 +47,11 @@ class User(models.Model):
         max_length=15,
         verbose_name='Telefon raqam'
     )
-    telegam_id = models.BigIntegerField(verbose_name='Telegram ID')
+    telegram_id = models.BigIntegerField(verbose_name='Telegram ID')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'user'
+        db_table = 'users'
         verbose_name = 'User'
         verbose_name_plural = 'Users'
 

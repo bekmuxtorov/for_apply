@@ -27,7 +27,7 @@
                         <div class="form-user-name mt-4 mt-md-0">
                             <label for="exampleInputEmail1" class="form-label fw-normal h5">Telegram ID</label>
                             <input type="text" class="send_message_input form-control"
-                                value="{{choose_ticket.user.telegam_id}}" disabled>
+                                value="{{choose_ticket.user.telegram_id}}" disabled>
                         </div>
                     </div>
                     <div class="form-user-name mt-4 w-100 ">
@@ -54,7 +54,7 @@
                     {% for ticket in tickets %}
                     <div class="border-bottom px-3 pb-2">
                         <a href="{% url 'tickets_detail' ticket.id %}" class="text-secondary">
-                            {{ticket.id}} || {{ticket.full_name}}
+                            {{ticket.id}} || {{ticket.user.full_name}}
                         </a>
                     </div>
                     {% endfor %}

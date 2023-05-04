@@ -24,7 +24,17 @@
                                     <div class="card-body">{{status.1}}</div>
                                     <div class="card-footer d-flex align-items-center justify-content-between">
                                         <a class="small text-white stretched-link"
-                                            href="{% url 'filter_status' status=status.0 %}">Soni: {{status.}}</a>
+                                            href="{% url 'filter_status' status=status.0 %}">
+
+                                            Soni:{% if status.0 == 'new' %}
+                                            {{ status_count.new }}
+                                            {% elif status.0 == 'waiting' %}
+                                            {{ status_count.waiting }}
+                                            {% elif status.0 == 'confirmed' %}
+                                            {{ status_count.confirmed }}
+                                            {% endif %}
+
+                                        </a>
                                         <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                                     </div>
                                 </div>

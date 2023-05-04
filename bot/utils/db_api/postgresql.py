@@ -6,6 +6,7 @@ from asyncpg.pool import Pool
 
 from data import config
 
+
 class Database:
 
     def __init__(self):
@@ -41,9 +42,9 @@ class Database:
     async def create_table_status(self):
         sql = """
         CREATE TABLE IF NOT EXISTS status (
-        id SERIAL PRIMARY KEY,
-        situation_en VARCHAR(50) NOT NULL,
-        situation_uz VARCHAR(50) NOT NULL
+            id SERIAL PRIMARY KEY,
+            situation_en VARCHAR(50) NOT NULL,
+            situation_uz VARCHAR(50) NOT NULL
         );
         """
         await self.execute(sql, execute=True)
@@ -51,23 +52,31 @@ class Database:
     async def create_table_faculty(self):
         sql = """
         CREATE TABLE IF NOT EXISTS faculty (
-        id SERIAL PRIMARY KEY,
-        name VARCHAR(200) NOT NULL
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(200) NOT NULL
         );
         """
         await self.execute(sql, execute=True)
 
-    async def create_table_ticket(self):
+    async def create_table_ticket_type(self):
         sql = """
-        CREATE TABLE IF NOT EXISTS ticket (
-        id BIGINT UNIQUE NOT NULL,
-        full_name VARCHAR(255) NOT NULL,
-        group_number varchar(20) NOT NULL,
-        status INTEGER REFERENCES status(id) DEFAULT 1,
-        file VARCHAR(300) NOT NULL,
-        telegram_id BIGINT NOT NULL UNIQUE,
-        created_at TIMESTAMP NOT NULL,
-        faculty INTEGER REFERENCES faculty(id)
+        CREATE TABLE IF NOT EXISTS ticket_type (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(200) NOT NULL
+        );
+        """
+        await self.execute(sql, execute=True)
+
+    async def create_table_user(self):
+        sql = """
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            full_name VARCHAR(255) NOT NULL,
+            group_number VARCHAR(20) NOT NULL,
+            phone_number VARCHAR(15) NOT NULL,
+            faculty INTEGER REFERENCES faculty(id),
+            telegram_id BIGINT NOT NULL UNIQUE,
+            created_at TIMESTAMP NOT NULL
         );
         """
         await self.execute(sql, execute=True)
@@ -80,44 +89,95 @@ class Database:
         ])
         return sql, tuple(parameters.values())
 
-
     """ STATUS TABLE """
-    async def add_status(self):
+    async def prepare_status(self):
         sql = """
         INSERT INTO status (situation_en, situation_uz)
         VALUES
-        ('new', 'Yangi'),
-        ('waiting', 'Kutilmoqda'),
-        ('confirmed', 'Tasdiqlangan');
+            ('new', 'Yangi'),
+            ('waiting', 'Kutilmoqda'),
+            ('confirmed', 'Tasdiqlangan');
         """
         await self.execute(sql, fetch=True)
 
+    """ FACUTY TABLE """
+    async def prepare_faculty(self):
+        sql = """
+        INSERT INTO faculty (name, created_at) 
+        VALUES
+            ('Filologiya'), ('Matematika-informatika'), ('Tarix'),
+            ('Chet tillari'), ('Harbiy talim'), ('Jismoniy madaniyat'), ('Iqtisodiyot'), 
+            ('Pedagogika psixologiya'), ('Tabiiy fanlar'), ('Sanatshunoslik'), ('Fizika-texnika'), 
+            ('Ingliz tili va adabiyoti'), ('Sirtqi bolim'), ('Agrar qoshma');
+        """
+        await self.execute(sql, fetch=True)
+
+    """ USER TABLE"""
+    async def add_user(
+            self,
+            full_name: str,
+            group_number: str,
+            faculty: int,
+            phone_number: str,
+            telegram_id: int,
+            created_at: date):
+        sql = """
+        INSERT INTO users 
+            (full_name, group_number, faculty_id, phone_number, telegram_id, created_at) 
+        VALUES 
+            ( $1, $2, $3, $4, $5, $6) returning *
+        """
+        return await self.execute(sql, full_name, group_number, faculty,
+                                  phone_number, telegram_id, created_at,
+                                  fetchrow=True)
+
+    async def get_user(self, telegram_id):
+        sql = f"""
+        SELECT * FROM users WHERE telegram_id={telegram_id}
+        """
+        return await self.execute(sql, fetchrow=True)
+
+    async def get_all_users(self):
+        sql = "SELECT * FROM users;"
+        return await self.execute(sql, fetch=True)
+
+    async def get_user_full_data(self, telegram_id):
+        sql = f"""
+        SELECT * FROM users INNER JOIN faculty ON users.faculty_id = faculty.id WHERE telegram_id = {telegram_id};  
+        """
+        return await self.execute(sql, fetchrow=True)
+
+    """ TICKET TYPE TABLE """
+    async def get_all_tickets(self):
+        return await self.execute("SELECT * FROM ticket_type;", fetch=True)
 
     """ TICKET TABLE """
     async def add_ticket(
             self,
             id: int,
-            full_name: str,
-            group_number: str,
-            file: str,
-            telegram_id: int,
+            text: str,
             created_at: date,
-            faculty_id: int,
-            status = 'new'
+            ticket_type: int,
+            user_id: int,
+            status: str = 'new',
+            file: str = None,
+            paynet: float = 0,
     ):
-        sql = "INSERT INTO ticket (id, full_name, group_number, " \
-              "file, telegam_id, created_at, faculty_id, status) " \
-              "VALUES($1, $2, $3, $4, $5, $6, $7, $8) returning *"
+        sql = """
+        INSERT INTO ticket 
+            (id, text, created_at, type_id, user_id, status, file, paynet) 
+        VALUES
+            ($1, $2, $3, $4, $5, $6, $7, $8) returning *"""
         return await self.execute(
             sql,
             id,
-            full_name,
-            group_number,
-            file,
-            telegram_id,
+            text,
             created_at,
-            faculty_id,
+            ticket_type,
+            user_id,
             status,
+            file,
+            paynet,
             fetchrow=True
         )
 
@@ -125,6 +185,11 @@ class Database:
         sql = "SELECT * FROM ticket"
         return await self.execute(sql, fetch=True)
 
+    async def get_ticket_full_data(self, ticket_type: int):
+        sql = f"""
+        SELECT * FROM ticket INNER JOIN ticket_type ON ticket.type_id=ticket_type.id WHERE type_id={ticket_type};
+        """
+        return await self.execute(sql, fetchrow=True)
 
     async def get_ticket(self, **kwargs):
         sql = "SELECT * FROM ticket WHERE "
@@ -141,8 +206,6 @@ class Database:
     async def drop_ticket(self):
         await self.execute("DROP TABLE ticket", execute=True)
 
-
-
     """ FACULTY TABLE """
     async def get__all_faculties(self):
         return await self.execute("SELECT * FROM faculty", fetch=True)
@@ -150,4 +213,3 @@ class Database:
     async def get_faculty(self, faculty_name):
         sql = f"SELECT * FROM faculty WHERE name = '{faculty_name}'"
         return await self.execute(sql, fetchrow=True)
-

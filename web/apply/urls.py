@@ -10,4 +10,6 @@ urlpatterns = [
          views.send_message_page, name='send_message'),
     path('filter_status/<str:status>/',
          views.status_tables_page, name='filter_status'),
+    path('filter_type/<int:pk>/',
+         views.type_tables_page, name='filter_type'),
 ]

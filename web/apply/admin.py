@@ -7,7 +7,7 @@ from .models import Faculty, Ticket, TicketType, User
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'faculty', 'group_number',
-                    'phone_number', 'telegam_id', 'created_at')
+                    'phone_number', 'telegram_id', 'created_at')
     search_fields = ('full_name', 'faculty')
     list_filter = ('faculty', 'group_number')
 

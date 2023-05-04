@@ -19,7 +19,7 @@
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <!-- Navbar Brand-->
-        <a class="navbar-brand ps-3" href="index.html">Ticket | fdu.uz</a>
+        <a class="navbar-brand ps-3" href="{% url 'home' %}">Ticket | fdu.uz</a>
         <!-- Sidebar Toggle-->
         <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
                 class="fas fa-bars"></i></button>
@@ -51,8 +51,15 @@
                         </a>
                         <a class="nav-link" href="{% url 'tickets' %}">
                             <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                            Arizalar
+                            Barcha arizalar
                         </a>
+                        <hr>
+                        {% for ticket_type in ticket_types %}
+                        <a class="nav-link" href="{% url 'filter_type' pk=ticket_type.id %}">
+                            <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                            {{ ticket_type.name }}
+                        </a>
+                        {% endfor %}
                     </div>
                 </div>
 
